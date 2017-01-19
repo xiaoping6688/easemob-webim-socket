@@ -1,0 +1,7 @@
+{
+  "name": "simulator",
+  "version": "1.0.0",
+  "description": "环信通信模拟器",
+  "main": "./app.js",
+  "private": true
+}

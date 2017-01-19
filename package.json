@@ -1,0 +1,16 @@
+{
+  "name": "easemob-simulator",
+  "version": "1.0.0",
+  "description": "环信通信模拟器开发环境",
+  "private": true,
+  "scripts": {
+    "start": "electron app",
+    "win32": "electron-packager ./app simulator --platform win32 --arch ia32 --out dist/ --overwrite --download.mirror https://npm.taobao.org/mirrors/electron/ --asar",
+    "win64": "electron-packager ./app simulator --platform win32 --arch x64 --out dist/ --overwrite --download.mirror https://npm.taobao.org/mirrors/electron/ --asar",
+    "mac": "electron-packager ./app simulator --platform darwin --arch x64 --out dist/ --overwrite --download.mirror https://npm.taobao.org/mirrors/electron/ --asar"
+  },
+  "devDependencies": {
+    "electron": "^1.4.12",
+    "electron-packager": "^8.4.0"
+  }
+}

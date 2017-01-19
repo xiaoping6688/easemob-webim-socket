@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>环信实时通讯模拟 - by xp</title>
+    <link rel="stylesheet" href="css/index.css" />
+  </head>
+
+  <body>
+    <div>
+      <div class="conn">
+        <label>用户名</label>
+        <input id="name"></input>
+        <label>密码</label>
+        <input id="pass"></input>
+        <label>房间ID</label>
+        <input id="room"></input>
+      </div>
+      <input id="cmd" placeholder="命令"></input>
+      <input id="arg" placeholder="参数"></input>
+      <button id="send">发送</button>
+      <textarea id="tip" readonly></textarea>
+    </div>
+
+    <script>
+      window.$ = window.jQuery = require("./lib/jquery.min.js")
+    </script>
+    <script src='js/webim.config.js'></script>
+    <script src='lib/web-im/strophe-1.2.8.min.js'></script>
+    <script src='lib/web-im/websdk-1.4.8.min.js'></script>
+    <script src="js/index.js"></script>
+  </body>
+</html>
