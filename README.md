@@ -1,6 +1,8 @@
 # easemob-webim-socket
 环信WEBIM通信封装（socket.js） + 客户端模拟器（electron）
 
+![image](https://raw.githubusercontent.com/xiaoping6688/easemob-webim-socket/master/screenshot.png)
+
 ## Install
 
 ```
