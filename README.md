@@ -1,7 +1,5 @@
 # easemob-webim-socket
-环信WEBIM通信封装（socket.js） + 客户端模拟器（electron）
-
-![image](https://raw.githubusercontent.com/xiaoping6688/easemob-webim-socket/master/screenshot.png)
+环信WEBIM通信封装（socket.js 非IM） + 客户端模拟器（electron）
 
 ## Install
 
@@ -37,3 +35,5 @@ function onReceived (tag, value) {
 //=> @see app/js/index.js // 参考socket使用方法
 //=> @see app/js/socket.js // 对环信WEB-IM sdk封装
 ```
+
+![image](https://raw.githubusercontent.com/xiaoping6688/easemob-webim-socket/master/screenshot.png)
