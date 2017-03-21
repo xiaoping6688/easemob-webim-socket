@@ -86,7 +86,7 @@ function connect(username, password, roomId, onConnected, onReceived, onError, o
       }
 
       if (typeof errorCallback === "function"){
-        errorCallback()
+        errorCallback('Socket Error')
       }
     }
   })
@@ -166,6 +166,9 @@ function login(username, password) {
     },
     error: function(){
       debuger('环信登录失败')
+      if (typeof errorCallback === "function"){
+        errorCallback('环信登录失败')
+      }
     }
   }
   client.open(options)
