@@ -28,7 +28,8 @@ $('#send').click(function(){
     return
   }
 
-  socket.send(tag, value)
+  let roomId = $('#room').val().trim()
+  socket.sendToAll(roomId, tag, value)
   // $('#cmd').val('')
   // $('#arg').val('')
 })
@@ -36,9 +37,8 @@ $('#send').click(function(){
 function initSocket () {
   let username = $('#name').val().trim()
   let password = $('#pass').val().trim()
-  let roomId = $('#room').val().trim()
 
-  socket.connect(username, password, roomId, function(){
+  socket.connect(username, password, function(){
 
   }, onReceived)
 }
