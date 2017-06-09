@@ -38,9 +38,7 @@ function initSocket () {
   let username = $('#name').val().trim()
   let password = $('#pass').val().trim()
 
-  socket.connect(username, password, function(){
-
-  }, onReceived)
+  socket.connect(username, password, null, onReceived)
 }
 
 function onReceived (tag, value) {

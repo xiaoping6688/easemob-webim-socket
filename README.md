@@ -1,5 +1,5 @@
 # easemob-webim-socket
-环信WEBIM通信封装（socket.js 非IM） + 客户端模拟器（electron）
+环信WEBIM即时通信封装（socket.js 非IM） + 客户端模拟器（electron）
 
 ## Install
 
@@ -23,7 +23,7 @@ function initSocket () {
   let password = $('#pass').val().trim()
   let roomId = $('#room').val().trim()
 
-  socket.connect(username, password, roomId, function(){
+  socket.connect(username, password, function(){
     // 环信连接&登录成功
   }, onReceived, onError)
 }
@@ -33,7 +33,7 @@ function onReceived (tag, value) {
 }
 
 //=> @see app/js/index.js // 参考socket使用方法
-//=> @see app/js/socket.js // 对环信WEB-IM sdk封装
+//=> @see app/js/socket.js // 对环信WEB-IM sdk封装，包括队列和日志功能等
 ```
 
 ![image](https://raw.githubusercontent.com/xiaoping6688/easemob-webim-socket/master/screenshot.png)

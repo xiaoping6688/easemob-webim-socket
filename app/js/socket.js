@@ -13,8 +13,10 @@
   var closeCallback = null
   var hasShutdown = false
   var logger = null
+  var hasConnected = false
+  var socketQueue = []
 
-  function connect(username, password, onConnected, onReceived, onError, onClosed){
+  function connect(username, password, onConnected, onReceived, onError, onClosed) {
     close(false)
 
     if (username){
@@ -54,12 +56,18 @@
         // 如果isAutoLogin设置为false，那么必须手动设置上线，否则无法收消息
         // 手动上线指的是调用conn.setPresence()
         trace('The socket has opened')
+        hasConnected = true
+
         if (typeof connectCallback === 'function'){
           connectCallback()
         }
+
+        execQueue()
       },
       onClosed: function (message) {
         trace('The socket closed')
+        hasConnected = false
+
         if (typeof closeCallback === 'function'){
           closeCallback()
         }
@@ -107,6 +115,8 @@
     if (shutdown === undefined) shutdown = true;
 
     hasShutdown = shutdown
+    hasConnected = false
+
     if (client){
       client.close()
       client = null
@@ -119,22 +129,27 @@
   function send(roomId, cmd, arg){
     trace('[Send] tag: ' + cmd + ' value: ' + (arg ? JSON.stringify(arg) : ''))
     if (client){
-      var id = client.getUniqueId()  //生成本地消息id
-      var msg = new WebIM.message('cmd', id) //创建命令消息
+      if (hasConnected) {
+        var id = client.getUniqueId()  //生成本地消息id
+        var msg = new WebIM.message('cmd', id) //创建命令消息
 
-      msg.set({
-        to: roomId, //接收消息对象
-        action: cmd,  //用户自定义，cmd消息必填
-        ext: { data: arg },  //用户自扩展的消息内容
-        success: function (id, serverMsgId) {  //消息发送成功回调
-          trace('The commond send success: ' + cmd)
-        }
-      })
+        msg.set({
+          to: roomId, //接收消息对象
+          action: cmd,  //用户自定义，cmd消息必填
+          ext: { data: arg },  //用户自扩展的消息内容
+          success: function (id, serverMsgId) {  //消息发送成功回调
+            trace('The commond send success: ' + cmd)
+          }
+        })
 
-      msg.body.roomType = true // 聊天室
-      msg.setGroup('groupchat')
+        msg.body.roomType = true // 聊天室
+        msg.setGroup('groupchat')
 
-      client.send(msg.body)
+        client.send(msg.body)
+      } else {
+        trace('指令加入socket队列：' + cmd)
+        socketQueue.push({ single: false, to: roomId, cmd: cmd, args: arg })
+      }
     } else {
       trace('socket 未连接')
     }
@@ -146,21 +161,25 @@
   function sendToUser(user, cmd, arg){
     trace('[Send] to: ' + user + ' tag: ' + cmd + ' value: ' + (arg ? JSON.stringify(arg) : ''))
     if (client){
-      var id = client.getUniqueId()  //生成本地消息id
-      var msg = new WebIM.message('cmd', id) //创建命令消息
+      if (hasConnected) {
+        var id = client.getUniqueId()  //生成本地消息id
+        var msg = new WebIM.message('cmd', id) //创建命令消息
 
-      msg.set({
-        to: user, //接收消息对象
-        action: cmd,  //用户自定义，cmd消息必填
-        ext: { data: arg },  //用户自扩展的消息内容
-        success: function (id, serverMsgId) {  //消息发送成功回调
-          trace('The commond send success: ' + cmd)
-        }
-      })
+        msg.set({
+          to: user, //接收消息对象
+          action: cmd,  //用户自定义，cmd消息必填
+          ext: { data: arg },  //用户自扩展的消息内容
+          success: function (id, serverMsgId) {  //消息发送成功回调
+            trace('The commond send success: ' + cmd)
+          }
+        })
+        msg.body.chatType = 'singleChat'
 
-      msg.body.chatType = 'singleChat'
-
-      client.send(msg.body)
+        client.send(msg.body)
+      } else {
+        trace('指令加入socket队列：' + cmd)
+        socketQueue.push({ single: true, to: user, cmd: cmd, args: arg })
+      }
     } else {
       trace('socket 未连接')
     }
@@ -239,6 +258,19 @@
       appKey: WebIM.config.appkey
     }
     client.open(options)
+  }
+
+  function execQueue () {
+    var item = socketQueue.pop()
+    if (item) {
+      trace('执行socket队列：' + item.cmd)
+      if (item.single) {
+        sendToUser(item.to, item.cmd, item.args)
+      } else {
+        send(item.to, item.cmd, item.args)
+      }
+      execQueue()
+    }
   }
 
   var socket = {
